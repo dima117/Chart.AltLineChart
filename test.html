@@ -4,8 +4,8 @@
 <head>
 	<meta charset="utf-8" />
 	<title></title>
-	<script src="Chart.Core.js"></script>
-	<script src="Chart.Scatter.js"></script>
+	<script src="Chart.js"></script>
+	<script src="Chart.Scatter.min.js"></script>
 </head>
 <body>
 	<canvas id="header-canvas" width="640" height="480"></canvas>
@@ -31,8 +31,7 @@
 			});
 		}
 
-		var ctx = document.getElementById("header-canvas").getContext("2d");
-		var myChart = new Chart(ctx).Scatter([{ label: "dataset 1", data: data }, { label: "dataset 2", data: data2 }], {
+		var options = {
 			showScale: true,
 			scaleShowLabels: true,
 			scaleShowHorizontalLines: true,
@@ -46,7 +45,7 @@
 			scaleDateTimeFormat: "HH:MM",
 			scaleGridLineWidth: 1,
 			useUtc: true,
-			pointDot: false,
+			pointDot: true,
 			scaleType: 'date',
 			animation: false,
 
@@ -54,9 +53,25 @@
 			scaleSteps: 3,
 			scaleStepWidth: 50,
 			scaleStartValue: 0
-		});
+		};
+
+		var datasets = [
+			{
+				label: "dataset 1",
+				strokeWidth: 5,
+				data: data
+			},
+			{
+				label: "dataset 2",
+				strokeWidth: 0,
+				data: data2 }
+		];
+
+		var ctx = document.getElementById("header-canvas").getContext("2d");
+		var myChart = new Chart(ctx).Scatter(datasets, options);
 
 		document.getElementById("legend").innerHTML = myChart.generateLegend();
+
 
 		setInterval(function () {
 
@@ -69,7 +84,8 @@
 			myChart.datasets[1].addPoint(arg, getRandomInt(0, 100));
 			myChart.update(), ii++;
 
-		}, 200);
+		}, 500);
+
 	</script>
 </body>
 </html>
