@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="utf-8" />
 	<title></title>
-	<script src="Chart.js"></script>
-	<script src="Chart.Scatter.min.js"></script>
+	<script src="Chart.Core.js"></script>
+	<script src="Chart.Scatter.js"></script>
 </head>
 <body>
 	<canvas id="header-canvas" width="640" height="480"></canvas>
@@ -18,20 +18,21 @@
 
 		var data = [], data2 = [], ii = 0;
 
-		for (ii = 0; ii < 15; ii++) {
+		for (ii = 0; ii < 12; ii++) {
 
 			data.push({
-				x: Date.parse("2015-04-27T04:00:00+03:00") + ii * 24 * 3600000,
-				y: getRandomInt(0, 100)
+				x: Date.parse("2016-02-15T03:00:00+03:00") + ii * 24 * 3600000,
+				y: undefined //getRandomInt(0, 100)
 			});
 
 			data2.push({
-				x: Date.parse("2015-04-27T04:00:00+03:00") + ii * 24 * 3600000,
+				x: Date.parse("2016-02-15T03:00:00+03:00") + ii * 24 * 3600000,
 				y: getRandomInt(0, 100)
 			});
 		}
 
-		var options = {
+		var ctx = document.getElementById("header-canvas").getContext("2d");
+		var myChart = new Chart(ctx).Scatter([{ label: "dataset 1", data: data }, { label: "dataset 2", data: data2 }], {
 			showScale: true,
 			scaleShowLabels: true,
 			scaleShowHorizontalLines: true,
@@ -45,47 +46,39 @@
 			scaleDateTimeFormat: "HH:MM",
 			scaleGridLineWidth: 1,
 			useUtc: true,
-			pointDot: true,
+			pointDot: false,
 			scaleType: 'date',
 			animation: false,
 
-			scaleOverride: true,
+			scaleOverride: false,
 			scaleSteps: 3,
 			scaleStepWidth: 50,
-			scaleStartValue: 0
-		};
+			scaleStartValue: 0,
 
-		var datasets = [
-			{
-				label: "dataset 1",
-				strokeWidth: 5,
-				data: data
-			},
-			{
-				label: "dataset 2",
-				strokeWidth: 0,
-				data: data2 }
-		];
+			xScaleOverride: false,
+			xScaleSteps: 10,
 
-		var ctx = document.getElementById("header-canvas").getContext("2d");
-		var myChart = new Chart(ctx).Scatter(datasets, options);
+			// Number - The value jump in the hard coded x scale
+			xScaleStepWidth: 3600000 * 24 * 14,
+
+			// Number - The x scale starting value
+			xScaleStartValue: Date.parse("2016-02-15T03:00:00+03:00")
+		});
 
 		document.getElementById("legend").innerHTML = myChart.generateLegend();
 
-
 		setInterval(function () {
 
-			var arg = Date.parse("2015-04-27T04:00:00+03:00") + ii * 24 * 3600000;
+			var arg = Date.parse("2016-02-15T03:00:00+03:00") + ii * 24 * 3600000;
 
-			myChart.datasets[0].removePoint(0);
-			myChart.datasets[1].removePoint(0);
+//			myChart.datasets[0].removePoint(0);
+//			myChart.datasets[1].removePoint(0);
 
 			myChart.datasets[0].addPoint(arg, getRandomInt(0, 100));
 			myChart.datasets[1].addPoint(arg, getRandomInt(0, 100));
 			myChart.update(), ii++;
 
-		}, 500);
-
+		}, 1000);
 	</script>
 </body>
 </html>
