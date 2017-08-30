@@ -662,6 +662,7 @@
 			this.strokeColor = datasetOptions.strokeColor || chartOptions.datasetStrokeColor;
 			this.pointColor = datasetOptions.pointColor || datasetOptions.strokeColor || chartOptions.datasetStrokeColor;
 			this.pointStrokeColor = datasetOptions.pointStrokeColor || chartOptions.datasetPointStrokeColor;
+			this.strokeWidth = datasetOptions.strokeWidth || chartOptions.datasetStrokeWidth;
 
 			this.pointDot = chartOptions.pointDot;
 			this.pointDotRadius = chartOptions.pointDotRadius;
@@ -1023,40 +1024,48 @@
 			var ctx = this.chart.ctx,
 				prev = undefined;
 
-			ctx.lineJoin = "round";
-			ctx.lineWidth = this.options.datasetStrokeWidth;
-			ctx.strokeStyle = dataset.strokeColor || this.options.datasetStrokeColor;
 
-			ctx.beginPath();
+			if (dataset.strokeWidth==0) {
+				return;
+			}
+			else {
+				ctx.lineJoin = "round";
+				ctx.lineWidth = dataset.strokeWidth || this.options.datasetStrokeWidth;
+				ctx.strokeStyle = dataset.strokeColor || this.options.datasetStrokeColor;
 
-			helpers.each(dataset.points, function (point, index) {
+				ctx.beginPath();
 
-				if (index === 0) {
+				helpers.each(dataset.points, function (point, index) {
 
-					ctx.moveTo(point.x, point.y);
-				}
-				else {
+					if (index === 0) {
 
-					if (this.options.bezierCurve) {
-
-						ctx.bezierCurveTo(
-							prev.controlPoints.x2,
-							prev.controlPoints.y2,
-							point.controlPoints.x1,
-							point.controlPoints.y1,
-							point.x, point.y);
+						ctx.moveTo(point.x, point.y);
 					}
 					else {
 
-						ctx.lineTo(point.x, point.y);
+						if (this.options.bezierCurve) {
+
+							ctx.bezierCurveTo(
+								prev.controlPoints.x2,
+								prev.controlPoints.y2,
+								point.controlPoints.x1,
+								point.controlPoints.y1,
+								point.x, point.y);
+						}
+						else {
+
+							ctx.lineTo(point.x, point.y);
+						}
 					}
-				}
 
-				prev = point;
+					prev = point;
 
-			}, this);
+				}, this);
 
-			ctx.stroke();
+				ctx.stroke();
+
+			}
+
 
 			// debug
 			//if (this.options.bezierCurve) {
